@@ -3,6 +3,9 @@ class Article:
         self._author = author
         self._magazine = magazine
         self._title = title
+        
+    def __repr__(self):
+        return f'<Article {self.title}>'
 
     @property
     def title(self):
@@ -22,5 +25,3 @@ class Article:
     def magazine(self):
         return self._magazine
 
-    def __repr__(self):
-        return f'<Article {self.title}>'

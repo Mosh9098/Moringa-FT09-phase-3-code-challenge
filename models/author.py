@@ -5,6 +5,9 @@ class Author:
     def __init__(self, id, name):
         self._id = id
         self._name = name
+        
+    def __repr__(self):
+        return f'<Author {self.name}>'
 
     @property
     def id(self):
@@ -38,5 +41,3 @@ class Author:
         conn.close()
         return [Magazine(magazine["id"], magazine["name"], magazine["category"]) for magazine in magazines]
 
-    def __repr__(self):
-        return f'<Author {self.name}>'
