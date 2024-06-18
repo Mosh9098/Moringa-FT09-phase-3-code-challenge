@@ -1,4 +1,7 @@
 from database.connection import get_db_connection
+from models.article import Article
+from models.author import Author
+
 
 class Magazine:
     def __init__(self, id, name, category):
@@ -7,7 +10,7 @@ class Magazine:
         self._category = category
         
     def __repr__(self):
-        return f'<Magazine {self.name}>'
+        return f'<Magazine {self._name}>'
 
     @property
     def id(self):
@@ -34,16 +37,14 @@ class Magazine:
         self._category = value
 
     def articles(self):
-        from models.article import Article
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM articles WHERE magazine_id=?", (self.id,))
         articles = cursor.fetchall()
         conn.close()
-        return [Article(article["id"], article["title"], article["content"], article["author_id"], article["magazine_id"]) for article in articles]
+        return [Article(article["id"], self, article["title"], article["content"]) for article in articles]
 
     def contributors(self):
-        from models.author import Author
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute("SELECT DISTINCT author_id FROM articles WHERE magazine_id=?", (self.id,))
@@ -52,7 +53,6 @@ class Magazine:
         return [Author(author["author_id"], None) for author in authors]
 
     def article_titles(self):
-        from models.article import Article
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute("SELECT title FROM articles WHERE magazine_id=?", (self.id,))
@@ -61,11 +61,9 @@ class Magazine:
         return [title["title"] for title in titles]
 
     def contributing_authors(self):
-        from models.author import Author
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute("SELECT author_id, COUNT(*) as count FROM articles WHERE magazine_id=? GROUP BY author_id HAVING count > 2", (self.id,))
+        cursor.execute("SELECT author_id, COUNT(*) as count FROM articles WHERE magazine_id=? GROUP BY author_id", (self.id,))
         authors = cursor.fetchall()
         conn.close()
-        return [Author(author["author_id"], None) for author in authors]
-
+        return [Author(author["author_id"], None) for author in authors if author["count"] > 2]

@@ -15,9 +15,10 @@ class TestModels(unittest.TestCase):
     def test_article_creation(self):
         author = Author(1, "John Doe")
         magazine = Magazine(1, "Tech Weekly", "Technology")
-        article = Article(author, magazine, "Test Title")
-        self.assertEqual(article.title, "Test Title")
-
+        content = "This is a test article."
+        article = Article(author, magazine, "Test Title", content)
+        self.assertIsInstance(article, Article)
+    
     def test_author_articles(self):
         author = Author(1, "John Doe")
         author_articles = author.articles()

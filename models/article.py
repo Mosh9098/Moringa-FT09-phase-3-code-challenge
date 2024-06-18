@@ -1,11 +1,12 @@
 class Article:
-    def __init__(self, author, magazine, title):
+    def __init__(self, author, magazine, title, content):
         self._author = author
         self._magazine = magazine
         self._title = title
+        self._content = content
         
     def __repr__(self):
-        return f'<Article {self.title}>'
+        return f'<Article {self._title}>'
 
     @property
     def title(self):
@@ -24,4 +25,3 @@ class Article:
     @property
     def magazine(self):
         return self._magazine
-

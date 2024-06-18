@@ -1,5 +1,5 @@
 from database.connection import get_db_connection
-
+from models.article import Article
 
 class Author:
     def __init__(self, id, name):
@@ -7,7 +7,7 @@ class Author:
         self._name = name
         
     def __repr__(self):
-        return f'<Author {self.name}>'
+        return f'<Author {self._name}>'
 
     @property
     def id(self):
@@ -24,20 +24,9 @@ class Author:
         self._name = value
 
     def articles(self):
-        from models.article import Article 
         conn = get_db_connection()
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM articles WHERE author_id=?", (self.id,))
         articles = cursor.fetchall()
         conn.close()
-        return [Article(article["id"], article["title"], article["content"], article["author_id"], article["magazine_id"]) for article in articles]
-
-    def magazines(self):
-        from models.magazine import Magazine 
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute("SELECT DISTINCT magazine_id FROM articles WHERE author_id=?", (self.id,))
-        magazines = cursor.fetchall()
-        conn.close()
-        return [Magazine(magazine["id"], magazine["name"], magazine["category"]) for magazine in magazines]
-
+        return [Article(self, None, article["title"], article["content"]) for article in articles]
